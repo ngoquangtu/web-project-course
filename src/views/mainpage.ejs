@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle</title>
+    <link rel="stylesheet" href="wordle.css">
+</head>
+<body>
+    <h1 id="textValid"></h1>
+    <div id="game">
+        <div class="grid"></div>
+    </div>
+    <div class="Button">
+        <button id="NewGameBtn">
+            NEW GAME
+        </button>
+        <form action="/logout" method="GET" id="form-logout">
+            <button id="logout">Log out</button>
+        </form>
+    </div>
+    <script src="./wordle.js" type="module"></script> 
+  
+</body>
+</html>

@@ -1,0 +1,87 @@
+html,body
+{
+    background: var(--default);
+}
+:root
+{
+    --default: #121213;
+    --empty :#323232;
+    --wrong : #b59f3b;
+    --right: #538d4e;
+}
+
+#game
+{
+    display:grid;
+    place-items:center;
+    width: 100%;
+    height: 600px;
+}
+.grid
+{
+    display:grid;
+    grid-template-columns: repeat(5,auto);
+    grid-template-rows: repeat(6,auto);
+
+}
+.box
+{
+    width:60px;
+    height:60px;
+    border: 2px solid var(--empty);
+    margin :4px;
+    color : white;
+    text-transform:  uppercase;
+    display: grid;
+    place-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font: 2.4rem;
+    border-radius: 20px;
+}
+.box.empty
+{
+    background: var(--empty);
+}
+.box.wrong
+{
+    background:var(--wrong);
+}
+.box.right
+{
+    background :var(--right);
+}
+#textValid
+{
+    height: auto;
+}
+.animated {
+    animation: flip 0.5s ease;
+  }
+@keyframes flip {
+    0% {
+      transform: scaleY(1);
+    }
+    50% {
+      transform: scaleY(0);
+    }
+    100% {
+      transform: scaleY(1);
+    }
+  }
+  .Button {
+    text-align: center; /* Căn giữa nút */
+    margin-top: 20px; /* Để cách với phần trên */
+}
+#NewGameBtn
+{
+    background-color: #4CAF50; /* Màu nền */
+    color: white; /* Màu chữ */
+    padding: 10px 20px; /* Kích thước của nút */
+    font-size: 16px; /* Kích thước chữ */
+    border: none; /* Xóa viền */
+    cursor: pointer; /* Đổi con trỏ khi di chuột qua nút */
+    border-radius: 5px; /* Bo tròn góc */
+}
+#NewGameBtn:hover {
+    background-color: #45a049; /* Màu nền khi di chuột qua */
+}

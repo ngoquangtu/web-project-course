@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SIGN IN</title>
+    <link rel="stylesheet" href="signup.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="signup">
+      <div class="signup__container">
+        <h1>Đăng Ký</h1>
+        <form action="/register" method="POST">
+          <h5>Email</h5>
+          <input type="email" name="email"  id="usernametext"class="input-signup-username" required />
+          <h5>Password</h5>
+          <input type="password" name="password"  id="passwordtext" class="input-signup-password" required  />
+          <button  id="signupbtn" type="submit" class="signup__signInButton">Đăng Ký</button>
+        </form>
+        
+        <a href="/login" class="signup__registerButton">Trang chủ</a>    
+      </div>
+    </div>
+  </body>
+</html>
