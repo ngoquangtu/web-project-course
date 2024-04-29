@@ -62,11 +62,9 @@ app.post('/login', async (req, res) => {
         if (!email || !password) {
             return res.status(400).send('Email và mật khẩu không được để trống');
         }
-
-        // Thực hiện đăng nhập bằng email và mật khẩu
         const success = await user.login(email, password);
         if (success) {
-                        // Lưu thông tin người dùng vào session
+            // Lưu thông tin người dùng vào session
             req.session.user = { email: email };
             res.redirect('/mainpage');
         } else {
@@ -89,7 +87,12 @@ app.post('/register', async (req, res) => {
         if (!email || !password) {
             return res.status(400).send('Email và mật khẩu không được để trống');
         }
-        await user.register(email, password);
+       
+        const success=await user.register(email, password);
+        if(success)
+        {
+            res.send('<h1>Registration Successful!</h1><p>Thank you for registering. You can now log in using your credentials.</p>');
+        }
     } catch (error) {
         console.error('Đăng ký thất bại:', error.message);
         res.status(500).send('Đăng ký thất bại. Tài khoản đăng ký đã tồn tại!.');
