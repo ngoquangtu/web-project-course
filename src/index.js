@@ -1,22 +1,26 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-
+const multer = require('multer');
 const app = express();
-
-const  User  = require('../src/public/userDTB.js');
+const upload = multer({ dest: "uploads/" });
+const User  = require('../src/public/userDTB.js');
 
 
 const user =  new User();
 const session = require('express-session');
-
+const FileStore=require('session-file-store')(session);
+const cookieParser=require('cookie-parser');
+app.use(cookieParser());
 app.use(session({
+    store:new FileStore({path:'./session'}),
     secret: 'ngoquangtu',
     resave: false,
     saveUninitialized: true,
     cookie:{
         secure:false,
-        httpOnly:true}
+        httpOnly:true,
+}
 }));
 const requireAuth = (req, res, next) => {
     if (!req.session.user) {
@@ -25,6 +29,7 @@ const requireAuth = (req, res, next) => {
         next();
     }
 };
+var userId;
 
 // Thiết lập view engine là EJS và đường dẫn cho thư mục views
 app.set('view engine', 'ejs');
@@ -58,18 +63,19 @@ app.get('/login', (req, res) => {
 
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
+    const loginFailure="Username or Password is not correct!!!Please try again!!!";
+
     try {
-        if (!email || !password) {
-            return res.status(400).send('Email và mật khẩu không được để trống');
-        }
         const success = await user.login(email, password);
         if (success) {
-            // Lưu thông tin người dùng vào session
             req.session.user = { email: email };
+            userId = await user.getCurrentUserId();
+            req.session.userId = userId;    
+            console.log(userId);
             res.redirect('/mainpage');
         } else {
-            console.error('Đăng nhập thất bại');
-            res.status(401).send('Email hoặc mật khẩu không chính xác');
+
+            res.render('login',{loginFailure})
         }
     } catch (error) {
         console.error('Đăng nhập thất bại:', error.message);
@@ -82,20 +88,25 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password,playerName } = req.body;
+    const successMessage = 'Đăng ký thành công!';
+    const failureMessage='Đăng ký thất bại. Tài khoản đăng ký đã tồn tại!';
     try {
         if (!email || !password) {
             return res.status(400).send('Email và mật khẩu không được để trống');
         }
        
-        const success=await user.register(email, password);
+        const success=await user.register(email, password,playerName);
         if(success)
         {
-            res.send('<h1>Registration Successful!</h1><p>Thank you for registering. You can now log in using your credentials.</p>');
+            res.render('signup',{successMessage});
+        }
+        else
+        {
+            res.render('signup',{failureMessage});
         }
     } catch (error) {
         console.error('Đăng ký thất bại:', error.message);
-        res.status(500).send('Đăng ký thất bại. Tài khoản đăng ký đã tồn tại!.');
     }
 });
 app.get('/logout', (req, res) => {
@@ -107,11 +118,49 @@ app.get('/logout', (req, res) => {
         }
     });
 });
-
-
-app.get('/mainpage',requireAuth,function(req,res)
+app.post('/upload',requireAuth,upload.single('image'),async (req,res)=>
 {
-    res.render('mainpage');
+    
+    
+    try {
+        const file = req.file;
+        if (!file) {return res.status(400).send('No file uploaded.');
+        }
+        const userId = req.session.userId;
+        console.log(userId); 
+        const success = await user.uploadAvatar( file,userId);
+        if (success) {
+            return res.send('Avatar uploaded successfully.');
+        } else {
+            return res.status(500).send('Failed to upload avatar.');
+        }
+    } catch (error) {
+        console.error('Error uploading avatar:', error);
+        return res.status(500).send('Internal server error.');
+    }
+});
+
+app.get('/forgotpassword', (req, res) => {
+    res.render('forgotpassword');
+});
+app.post('/forgotpassword',async (req,res)=>
+{
+    const {email}=req.body;
+         const success=user.forgotPassword(email); // Truyền giá trị email vào hàm forgotPassword
+       if(success)
+        {
+            console.log('gui thanh cong');
+        }
+        else
+        {
+            console.log("gui that bai");
+        }
+})
+
+app.get('/mainpage',requireAuth,async function  (req,res)
+{
+    res.render('mainpage'); 
+
 });
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

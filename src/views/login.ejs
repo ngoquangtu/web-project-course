@@ -13,6 +13,31 @@
     <title>LOGIN</title>
 </head>
     <body>
+        <!-- <div class="cube-container">
+            <div class="cube">
+                <dic class="top"></dic>
+                <div>
+                    <span style="--i:0;"></span>
+                    <span style="--i:1;"></span>
+                    <span style="--i:2;"></span>
+                    <span style="--i:3;"></span>
+                </div>
+                <dic class="bottom"></dic>
+            </div>
+        </div>
+    
+        <div class="pyramid-container">
+            <div class="pyramid">
+                <dic class="top-pyramid"></dic>
+                <div>
+                    <span style="--i:0;"></span>
+                    <span style="--i:1;"></span>
+                    <span style="--i:2;"></span>
+                    <span style="--i:3;"></span>
+                </div>
+                <dic class="bottom"></dic>
+            </div>
+        </div> -->
         <form action="/login" method="POST">
         	<div class="svgContainer">
                 <div>
@@ -124,41 +149,21 @@
             <div class="inputGroup inputGroup2">
                 <label for="password" id="passwordlabel">Password</label>
                 <input type="password" name="password"  id="password" class="password"  required >
-                <label id="showPasswordToggle" for="showPasswordCheck">Show
+                <label id="showPasswordToggle" for="showPasswordCheck">show
                     <input id="showPasswordCheck" type="checkbox"/>
                     <div class="indicator"></div>
                 </label>
+                <% if (typeof loginFailure !== 'undefined') { %>
+                    <div name ="loginFailure" style="color: red";><%= loginFailure %></div>
+                  <% } %>
             </div>
             <div class="inputGroup inputGroup3">
                 <button class="form-submit" type="submit" id="login">Log in</button> 
             </div>
-            <p>Don't have an account? <a href="/register">Register now!</a>.</p>
+            <p>Don't have an account? <a href="/register">Register now!</a></p>
+            <a href="/forgotpassword">Forgot Password </a> </p>
     </form>
-    <div class="cube-container">
-        <div class="cube">
-            <dic class="top"></dic>
-            <div>
-                <span style="--i:0;"></span>
-                <span style="--i:1;"></span>
-                <span style="--i:2;"></span>
-                <span style="--i:3;"></span>
-            </div>
-            <dic class="bottom"></dic>
-        </div>
-    </div>
-
-    <div class="pyramid-container">
-        <div class="pyramid">
-            <dic class="top-pyramid"></dic>
-            <div>
-                <span style="--i:0;"></span>
-                <span style="--i:1;"></span>
-                <span style="--i:2;"></span>
-                <span style="--i:3;"></span>
-            </div>
-            <dic class="bottom"></dic>
-        </div>
-    </div>
+ 
     
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="hidePassword.js"></script>

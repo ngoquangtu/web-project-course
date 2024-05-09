@@ -7,7 +7,17 @@
     <link rel="stylesheet" href="wordle.css">
 </head>
 <body>
-    <h1 id="textValid"></h1>
+    <h1> WORDLE
+            <button>
+                123
+            </button>
+            <button>
+                456
+            </button>
+            <button>789</button>
+       
+    </h1>
+    <h2 id="textValid"></h2>
     <div id="game">
         <div class="grid"></div>
     </div>
@@ -18,8 +28,46 @@
         <form action="/logout" method="GET" id="form-logout">
             <button id="logout">Log out</button>
         </form>
+        <input type="file" id="fileInput">
+        <button onclick="uploadImage()">Upload Avatar</button>
+        <div id="avatarContainer"></div>
+        <div id="errorContainer" style="color: red;"></div>
     </div>
-    <script src="./wordle.js" type="module"></script> 
-  
+    <script src="./wordle.js" type="module"></script>
+    <script>
+        async function uploadImage() {
+            const fileInput = document.getElementById("fileInput");
+            const file = fileInput.files[0];
+            
+            const formData = new FormData();
+            formData.append("image", file);
+
+            try {
+                const response = await fetch("/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error("Lỗi khi tải ảnh lên.");
+                }
+
+                const avatarImg = document.createElement('img');
+                avatarImg.src = URL.createObjectURL(file);
+
+                // Chèn phần tử hình ảnh vào trong avatarContainer
+                const avatarContainer = document.getElementById('avatarContainer');
+                avatarContainer.innerHTML = '';
+                avatarContainer.appendChild(avatarImg);
+                
+                const errorContainer = document.getElementById('errorContainer');
+                errorContainer.textContent = '';
+            } catch (error) {
+                console.error("Lỗi khi tải ảnh lên:", error);
+                const errorContainer = document.getElementById('errorContainer');
+                errorContainer.textContent = "Vui lòng chọn ảnh định dạng PNG hoặc JPEG!!!";
+            }
+        }
+    </script>
 </body>
 </html>

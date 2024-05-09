@@ -9,12 +9,16 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.6.8",
+    "cookie-parser": "^1.4.6",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "firebase": "^10.11.1",
+    "firebase-admin": "^12.1.0",
+    "multer": "^1.4.5-lts.1",
     "node-fetch": "^3.3.2",
-    "play-sound": "^1.1.6"
+    "play-sound": "^1.1.6",
+    "session-file-store": "^1.5.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.1",
