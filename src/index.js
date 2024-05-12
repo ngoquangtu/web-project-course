@@ -118,19 +118,17 @@ app.get('/logout', (req, res) => {
         }
     });
 });
-app.post('/upload',requireAuth,upload.single('image'),async (req,res)=>
+app.post('/upload',upload.single('file'),async (req,res)=>
 {
     
     
     try {
-        const file = req.file;
-        if (!file) {return res.status(400).send('No file uploaded.');
-        }
+        const avatarFile = req.file;
         const userId = req.session.userId;
         console.log(userId); 
-        const success = await user.uploadAvatar( file,userId);
+        const success = await user.uploadAvatar( avatarFile,userId);
         if (success) {
-            return res.send('Avatar uploaded successfully.');
+            return res.status(500).send({avatarUrl:success});
         } else {
             return res.status(500).send('Failed to upload avatar.');
         }
@@ -146,21 +144,32 @@ app.get('/forgotpassword', (req, res) => {
 app.post('/forgotpassword',async (req,res)=>
 {
     const {email}=req.body;
-         const success=user.forgotPassword(email); // Truyền giá trị email vào hàm forgotPassword
+         const success=user.forgotPassword(email); 
+        
        if(success)
         {
-            console.log('gui thanh cong');
+            res.send('gui thanh cong');
         }
         else
         {
-            console.log("gui that bai");
+            res.send('gui thanh cong');
         }
 })
 
 app.get('/mainpage',requireAuth,async function  (req,res)
 {
-    res.render('mainpage'); 
-
+        try {
+            const userId = req.session.userId; // Lấy userId từ session
+            const avatarUrl = await user.loadAvatar(userId); // Tải avatar của người dùng
+            if (avatarUrl) {
+                res.render('mainpage', { avatarUrl: avatarUrl });
+            } else {
+                res.render('mainpage', { avatarUrl: null });
+            }
+        } catch (error) {
+            console.error('Error loading avatar:', error);
+            res.status(500).send('Internal server error.');
+        }
 });
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

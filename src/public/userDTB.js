@@ -58,7 +58,16 @@ class User {
         try 
         {
                 await signInWithEmailAndPassword(this.auth, email, password);
-                return true; // Trả về true nếu đăng nhập thành công
+                const currentUser = this.auth.currentUser;
+                if (currentUser) {
+                    // Lấy thông tin người dùng từ Firestore
+                    const userData = await this.loadUserInfor(currentUser.uid);
+                    if (userData && userData.avatarUrl) {
+                        // Tải lại avatar của người dùng
+                        await this.loadAvatar(currentUser.uid);
+                    }
+                }
+                return true; 
             } catch (error) {
                 console.error("Error logging in:", error.message);
                 return false; // Trả về false nếu đăng nhập thất bại
@@ -128,9 +137,7 @@ class User {
             const userRef =  doc(this.db, "users", userId);
             const userDoc = await getDoc(userRef);
             if (userDoc.exists()) {
-                const userData = userDoc.data();
-                const { playerName } = userData; 
-                return { playerName: playerName };
+                return userDoc.data();
             } else {
                 console.log("Không tìm thấy người dùng với ID đã cho.");
                 return null;
@@ -166,7 +173,6 @@ class User {
                 return;
             }
     
-
             const fileName = Date.now() + avatarFile.originalname; 
 
             const destination = "avatars/" +    fileName;
@@ -184,21 +190,38 @@ class User {
             const avatarUrl=await bucket.file(destination).getSignedUrl({ action: 'read', expires: '01-01-2026' });
             const userRef = doc(this.db, 'users', userID);
             await setDoc(userRef, { avatarUrl: avatarUrl }, { merge: true });
-            return true;
+            console.log(avatarUrl);
+            return avatarUrl;
         } catch (error) {
             console.log('Error uploading avatar', error);
-
             return false;
         }
     }
     async forgotPassword(email) {
         try {
-            sendPasswordResetEmail(this.auth, email);
+            await sendPasswordResetEmail(this.auth, email);
             return true;
             
         } catch (error) {
             console.log('Lỗi khi gửi email đặt lại mật khẩu:', error);
             return false;
+        }
+    }
+    async loadAvatar(userId)
+    {
+        try
+        {
+            const userData=await this.loadUserInfor(userId);
+            if(userData && userData.avatarUrl)
+            {
+                const avatarUrl = userData.avatarUrl;
+                
+                return avatarUrl;
+            }
+            
+        }
+         catch (error) {
+        console.error("Error loading avatar:", error.message);
         }
     }
 }

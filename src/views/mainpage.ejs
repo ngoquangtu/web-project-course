@@ -28,46 +28,50 @@
         <form action="/logout" method="GET" id="form-logout">
             <button id="logout">Log out</button>
         </form>
-        <input type="file" id="fileInput">
-        <button onclick="uploadImage()">Upload Avatar</button>
-        <div id="avatarContainer"></div>
-        <div id="errorContainer" style="color: red;"></div>
+        
+        <form action="/upload" method="post" id="uploadForm">
+            <button type="submit" id="uploadBtn">Upload avatar</button>
+            <input type="file" id="fileInput" name="file">
+        </form>
+        <% if (avatarUrl) { %>
+            <img src="<%= avatarUrl %>" id="avatarImg" alt="Avatar">
+        <% } else { %>
+            <p>AVT default</p>
+        <% } %>
     </div>
     <script src="./wordle.js" type="module"></script>
     <script>
-        async function uploadImage() {
-            const fileInput = document.getElementById("fileInput");
-            const file = fileInput.files[0];
-            
-            const formData = new FormData();
-            formData.append("image", file);
+document.getElementById('uploadForm').addEventListener('submit', async (event) => {
+        event.preventDefault(); // Ngăn chặn hành động mặc định của form
 
-            try {
-                const response = await fetch("/upload", {
-                    method: "POST",
-                    body: formData,
-                });
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
 
-                if (!response.ok) {
-                    throw new Error("Lỗi khi tải ảnh lên.");
-                }
-
-                const avatarImg = document.createElement('img');
-                avatarImg.src = URL.createObjectURL(file);
-
-                // Chèn phần tử hình ảnh vào trong avatarContainer
-                const avatarContainer = document.getElementById('avatarContainer');
-                avatarContainer.innerHTML = '';
-                avatarContainer.appendChild(avatarImg);
-                
-                const errorContainer = document.getElementById('errorContainer');
-                errorContainer.textContent = '';
-            } catch (error) {
-                console.error("Lỗi khi tải ảnh lên:", error);
-                const errorContainer = document.getElementById('errorContainer');
-                errorContainer.textContent = "Vui lòng chọn ảnh định dạng PNG hoặc JPEG!!!";
-            }
+        if (!file) {
+            alert('Vui lòng chọn một tập tin ảnh.');
+            return;
         }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const responseData = await response.json();
+            const avatarUrl = responseData.avatarUrl;
+
+            document.getElementById('avatarImg').src =avatarUrl;
+            alert('Tải ảnh lên thành công!');
+            fileInput.value = '';
+        } catch (error) {
+            console.error('Lỗi khi tải ảnh lên:', error);
+            alert('Đã xảy ra lỗi khi tải ảnh lên.');
+        }
+    });
     </script>
 </body>
 </html>
