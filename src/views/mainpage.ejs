@@ -5,73 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wordle</title>
     <link rel="stylesheet" href="wordle.css">
+    <style>
+
+    </style>
 </head>
 <body>
-    <h1> WORDLE
-            <button>
-                123
-            </button>
-            <button>
-                456
-            </button>
-            <button>789</button>
-       
-    </h1>
+    <div id="header">
+        <h1>WORDLE</h1>
+        <div id="avatarContainer">
+            <% if (avatarUrl) { %>
+                <img src="<%= avatarUrl %>" id="avatarImg" alt="Avatar">
+            <% } else { %>
+                <p>AVT default</p>
+            <% } %>
+            <div id="avatarMenu">
+                <form action="/logout" method="GET" id="form-logout">
+                    <button id="logout">Log out</button>
+                </form>
+                <form action="/upload" method="post" id="uploadForm" enctype="multipart/form-data">
+                    <input type="file" id="fileInput" name="file" style="display: none;">
+                    <button type="button" id="changeAvatarBtn">Change Avatar</button>
+                    <button type="submit" id="uploadBtn" style="display: none;">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
     <h2 id="textValid"></h2>
     <div id="game">
         <div class="grid"></div>
     </div>
     <div class="Button">
-        <button id="NewGameBtn">
-            NEW GAME
-        </button>
-        <form action="/logout" method="GET" id="form-logout">
-            <button id="logout">Log out</button>
-        </form>
-        
-        <form action="/upload" method="post" id="uploadForm">
-            <button type="submit" id="uploadBtn">Upload avatar</button>
-            <input type="file" id="fileInput" name="file">
-        </form>
-        <% if (avatarUrl) { %>
-            <img src="<%= avatarUrl %>" id="avatarImg" alt="Avatar">
-        <% } else { %>
-            <p>AVT default</p>
-        <% } %>
+        <button id="NewGameBtn">NEW GAME</button>
     </div>
     <script src="./wordle.js" type="module"></script>
     <script>
-document.getElementById('uploadForm').addEventListener('submit', async (event) => {
-        event.preventDefault(); // Ngăn chặn hành động mặc định của form
+        document.getElementById('avatarImg').addEventListener('click', () => {
+            const avatarMenu = document.getElementById('avatarMenu');
+            avatarMenu.style.display = avatarMenu.style.display === 'block' ? 'none' : 'block';
+        });
 
-        const fileInput = document.getElementById('fileInput');
-        const file = fileInput.files[0];
+        document.getElementById('changeAvatarBtn').addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
 
-        if (!file) {
-            alert('Vui lòng chọn một tập tin ảnh.');
-            return;
-        }
+        document.getElementById('fileInput').addEventListener('change', () => {
+            const uploadBtn = document.getElementById('uploadBtn');
+            uploadBtn.style.display = 'block';
+        });
 
-        const formData = new FormData();
-        formData.append('file', file);
+        document.getElementById('uploadForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); 
 
-        try {
-            const response = await fetch('/upload', {
-                method: 'POST',
-                body: formData
-            });
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
 
-            const responseData = await response.json();
-            const avatarUrl = responseData.avatarUrl;
+            if (!file) {
+                alert('Vui lòng chọn một tập tin ảnh.');
+                return;
+            }
 
-            document.getElementById('avatarImg').src =avatarUrl;
-            alert('Tải ảnh lên thành công!');
-            fileInput.value = '';
-        } catch (error) {
-            console.error('Lỗi khi tải ảnh lên:', error);
-            alert('Đã xảy ra lỗi khi tải ảnh lên.');
-        }
-    });
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const responseData = await response.json();
+                const avatarUrl = responseData.avatarUrl;
+
+                document.getElementById('avatarImg').src = avatarUrl;
+                alert('Tải ảnh lên thành công!');
+                fileInput.value = '';
+                document.getElementById('uploadBtn').style.display = 'none';
+            } catch (error) {
+                console.error('Lỗi khi tải ảnh lên:', error);
+                alert('Đã xảy ra lỗi khi tải ảnh lên.');
+            }
+        });
     </script>
 </body>
 </html>

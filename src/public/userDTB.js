@@ -4,7 +4,7 @@ const { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, ge
 const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,sendPasswordResetEmail } = require('firebase/auth');
 const admin = require("firebase-admin");
 const serviceAccount = require("../../serviceAccount.json");
-
+require("dotenv").config();
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     storageBucket: "lexiland2024.appspot.com" 
@@ -14,13 +14,13 @@ class User {
     constructor() {
         
         const firebaseConfig = {
-            apiKey: "AIzaSyBOR8_tGBEyN6nn_zkUB7TNv2x6KjHiT2c",
-            authDomain: "lexiland2024.firebaseapp.com",
-            projectId: "lexiland2024",
-            storageBucket: "lexiland2024.appspot.com",
-            messagingSenderId: "154851344957",
-            appId: "1:154851344957:web:c97a8078658c716cb96054",
-            measurementId: "G-PQY3W7VCSJ",
+            apiKey: process.env.API_KEY_FIREBASE,
+            authDomain: process.env.AUTH_DOMAIN_FIREBASE,
+            projectId: process.env.PROJECT_ID_FIREBASE,
+            storageBucket: process.env.STORAGE_BUCKET_FIREBASE,
+            messagingSenderId: process.env.MESSAGING_SENDER_ID_FIREBASE,
+            appId: process.env.APP_ID_FIREBASE,
+            measurementId: process.env.MESUREMENT_ID_FIREBASE,
 
           };
         if (!firebaseConfig || typeof firebaseConfig !== 'object') {
@@ -128,7 +128,6 @@ class User {
             throw error;
         }
     }
-
     async loadUserInfor(userId)
     {
         
@@ -214,8 +213,7 @@ class User {
             const userData=await this.loadUserInfor(userId);
             if(userData && userData.avatarUrl)
             {
-                const avatarUrl = userData.avatarUrl;
-                
+                const avatarUrl = userData.avatarUrl;      
                 return avatarUrl;
             }
             

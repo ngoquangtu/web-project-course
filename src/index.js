@@ -148,11 +148,11 @@ app.post('/forgotpassword',async (req,res)=>
         
        if(success)
         {
-            res.send('gui thanh cong');
+            res.send('Gửi thành công. Vui lòng kiểm tra email của bạn.');
         }
         else
         {
-            res.send('gui thanh cong');
+            res.send('Không thể gửi yêu cầu đặt lại mật khẩu. Vui lòng thử lại.');
         }
 })
 
