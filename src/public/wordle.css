@@ -21,6 +21,7 @@ h1{
     border-bottom: 1px solid #eee;
     margin: 0 0 30px 0;
     color: #333;
+    letter-spacing: 10px;
   }
 
 #game
@@ -94,6 +95,8 @@ h1{
     border: none; /* Xóa viền */
     cursor: pointer; /* Đổi con trỏ khi di chuột qua nút */
     border-radius: 5px; /* Bo tròn góc */
+    display: inline-block;
+    margin: 0 auto;
 }
 #NewGameBtn:hover {
     background-color: #45a049; /* Màu nền khi di chuột qua */
@@ -124,6 +127,8 @@ h1{
     max-height: 50px;
     border-radius: 50%;
     cursor: pointer;
+    position: relative;
+    display:inline;
 }
 #avatarMenu {
     display: none;
